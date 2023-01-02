@@ -3,7 +3,7 @@ module github.com/infratographer/lmi
 go 1.19
 
 require (
-	github.com/cockroachdb/cockroach-go/v2 v2.2.19
+	github.com/cockroachdb/cockroach-go/v2 v2.2.20
 	github.com/google/uuid v1.3.0
 	github.com/infratographer/fertilesoil v0.0.6
 	github.com/nats-io/nats.go v1.22.1
