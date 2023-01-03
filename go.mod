@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/cockroachdb/cockroach-go/v2 v2.2.20
 	github.com/google/uuid v1.3.0
-	github.com/infratographer/fertilesoil v0.0.6
+	github.com/infratographer/fertilesoil v0.0.7
 	github.com/nats-io/nats.go v1.22.1
 	github.com/pressly/goose/v3 v3.7.0
 	github.com/spf13/cobra v1.6.1

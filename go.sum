@@ -190,6 +190,8 @@ github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/infratographer/fertilesoil v0.0.6 h1:J+5R8zbLD8xiktB5tHFfpoyiHhVEEWtHIK8xN6JJSfs=
 github.com/infratographer/fertilesoil v0.0.6/go.mod h1:CW4j6NE3xIA6Y51y/X/JAedzW5N9KhySIUhGGBQYVvM=
+github.com/infratographer/fertilesoil v0.0.7 h1:SwBrFTlzpoqM31dI5L/5NvTliOHw0mIVgYuE/A63yeA=
+github.com/infratographer/fertilesoil v0.0.7/go.mod h1:Z7XSjJ8MI8Z/450P4kh4bKOZ1N0gVG+dnNWl3zU1f/Q=
 github.com/jackc/chunkreader v1.0.0/go.mod h1:RT6O25fNZIuasFJRyZ4R/Y2BbhasbmZXF9QQ7T3kePo=
 github.com/jackc/chunkreader/v2 v2.0.0/go.mod h1:odVSm741yZoC3dpHEUXIqA9tQRhFrgOHwnPIn9lDKlk=
 github.com/jackc/chunkreader/v2 v2.0.1 h1:i+RDz65UE+mmpjTfyz0MoVTnzeYxroil2G82ki7MGG8=
