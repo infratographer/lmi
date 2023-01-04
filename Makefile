@@ -12,6 +12,9 @@ CONTAINER_REPO?=ghcr.io/infratographer/lmi
 LMI_CONTAINER_IMAGE_NAME = $(CONTAINER_REPO)/lmi
 CONTAINER_TAG?=latest
 
+# OpenAPI
+OAPI_CODEGEN_CMD?=go run github.com/deepmap/oapi-codegen/cmd/oapi-codegen
+
 ## Targets
 
 .PHONY: build
@@ -50,6 +53,35 @@ image: lmi-image
 
 lmi-image:
 	$(CONTAINER_BUILD_CMD) -f images/lmi/Dockerfile . -t $(LMI_CONTAINER_IMAGE_NAME):$(CONTAINER_TAG)
+
+.PHONY: generate
+generate: openapi
+
+.PHONY: openapi
+openapi: openapi-types openapi-client openapi-spec
+
+.PHONY: openapi-types
+openapi-types:
+	@echo Generating OpenAPI types...
+	@$(OAPI_CODEGEN_CMD) -package v1 \
+		-generate types \
+		-o api/v1/types.gen.go openapi-v1.yaml
+
+# Note that due to a limitation in oapi-codegen, we need to generate the client
+# in the same package as the types.
+.PHONY: openapi-client
+openapi-client:
+	@echo Generating OpenAPI client...
+	@$(OAPI_CODEGEN_CMD) -package v1 \
+		-generate client \
+		-o api/v1/client.gen.go openapi-v1.yaml
+
+.PHONY: openapi-spec
+openapi-spec:
+	@echo Generating OpenAPI spec...
+	@$(OAPI_CODEGEN_CMD) -package v1 \
+		-generate spec \
+		-o api/v1/openapi.gen.go openapi-v1.yaml
 
 # Tools setup
 $(TOOLS_DIR):

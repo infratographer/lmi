@@ -7,8 +7,7 @@ import (
 	appv1 "github.com/infratographer/fertilesoil/app/v1"
 )
 
-type Reconciler struct {
-}
+type Reconciler struct{}
 
 var _ appv1.Reconciler = &Reconciler{}
 
@@ -16,6 +15,7 @@ func NewReconciler() *Reconciler {
 	return &Reconciler{}
 }
 
+//nolint:gocritic // passing the directory event by value ensures we don't modify it
 func (r *Reconciler) Reconcile(ctx context.Context, evt apiv1.DirectoryEvent) error {
 	// Here we will look at a directory event and perform the appropriate
 	// action on the database. e.g. if the event is a create, we will

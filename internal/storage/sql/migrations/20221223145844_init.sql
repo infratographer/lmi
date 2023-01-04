@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS permissions (
 --           as well as global roles people can use.
 CREATE TABLE IF NOT EXISTS roles (
     role_id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
-    description VARCHAR(255) NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

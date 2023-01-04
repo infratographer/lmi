@@ -1,0 +1,434 @@
+---
+openapi: "3.1.0"
+info:
+  version: 0.0.1
+  title: LMI - Let me in!
+  description: LMI is an API to manage access to services.
+  contact:
+    name: Infratographer Authors
+    url: http://github.com/infratographer
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+#servers:
+#  - url: http://localhost
+paths:
+  /roles:
+    get:
+      description: |
+        Returns a list of roles.
+      operationId: getRoles
+      responses:
+        '200':
+          description: roles response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates a new role
+      operationId: createRole
+      requestBody:
+        description: Role to add to a subject
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRole'
+      responses:
+        '200':
+          description: role response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /roles/{id}:
+    get:
+      description: Returns a role based on a single ID.
+      operationId: getRole
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: role response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      description: Updates a role based on the ID supplied
+      operationId: updateRole
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Role to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: role updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: deletes a single role based on the ID supplied
+      operationId: deleteRole
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: role deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /roles/{id}/permissions:
+    get:
+      description: Returns a list of permissions for a role
+      operationId: getRolePermissions
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to return permissions for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: role permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Adds a permission to a role
+      operationId: addRolePermission
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to add permission to
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Permission to add to a role
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      responses:
+        '200':
+          description: role permission added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes a permission from a role
+      operationId: removeRolePermission
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to remove permission from
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Permission to remove from a role
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      responses:
+        '200':
+          description: role permission removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /roles/{id}/assignments:
+    post:
+      description: Assigns a role to a subject
+      operationId: assignRole
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to assign
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The subject and scope to assign the role to
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subject
+                - scope
+              properties:
+                subject:
+                  type: string
+                scope:
+                  type: string
+      responses:
+        '200':
+          description: role assigned
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      description: returns a list of subjects assigned to a role
+      operationId: getRoleAssignments
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to return assignments for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: role assignments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - subject
+                    - scope
+                  properties:
+                    subject:
+                      type: string
+                    scope:
+                      type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: removes a subject from a role
+      operationId: removeRoleAssignment
+      parameters:
+        - name: id
+          in: path
+          description: ID of role to remove assignment from
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The subject and scope to remove the role from
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subject
+                - scope
+              properties:
+                subject:
+                  type: string
+                scope:
+                  type: string
+      responses:
+        '200':
+          description: role assignment removed
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /assignments:
+    get:
+      description: returns a list of roles assigned to a subject
+      operationId: getAssignments
+      parameters:
+        - name: subject
+          in: query
+          description: subject to return assignments for
+          required: true
+          schema:
+            type: string
+        - name: scope
+          in: query
+          description: scope to return assignments for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: role assignments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - subject
+                    - scope
+                    - role
+                  properties:
+                    subject:
+                      type: string
+                    scope:
+                      type: string
+                    role:
+                      type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /permissions:
+    get:
+      description: returns a list of permissions
+      operationId: getPermissions
+      responses:
+        '200':
+          description: permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Role:
+      allOf:
+        - $ref: '#/components/schemas/NewRole'
+        - type: object
+          required:
+          - id
+          properties:
+            id:
+              type: string
+
+    NewRole:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string    
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+
+    Permission:
+      type: object
+      required:
+        - target
+      properties:
+        target:
+          type: string
+        description:
+          type: string
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string

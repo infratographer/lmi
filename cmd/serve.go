@@ -25,7 +25,7 @@ import (
 	dbutils "github.com/infratographer/lmi/internal/storage/sql/utils"
 )
 
-// serveCmd represents the serve command
+// serveCmd represents the serve command.
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "A brief description of your command",
@@ -43,6 +43,7 @@ const (
 	defaultDBName     = "permissions"
 )
 
+//nolint:gochecknoinits // This is a Cobra generated file
 func init() {
 	rootCmd.AddCommand(serveCmd)
 
