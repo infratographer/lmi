@@ -24,6 +24,11 @@ to quickly create a Cobra application.`,
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
+//nolint:gochecknoinits // We need this to register our flags.
+func init() {
+	cobra.OnInitialize(initConfig)
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {

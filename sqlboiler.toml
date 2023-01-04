@@ -1,0 +1,7 @@
+[crdb]
+user="root"
+pass=""
+host="localhost"
+port=26257
+dbname="lmi_dev"
+sslmode="disable"

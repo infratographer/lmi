@@ -68,15 +68,6 @@ func init() {
 	viperx.MustBindFlag(v, "nats.nkey", flags.Lookup("nats-nkey"))
 }
 
-func initLogger() *zap.Logger {
-	sl := loggingx.InitLogger("lmi", loggingx.Config{
-		Debug:  viper.GetBool("debug"),
-		Pretty: viper.GetBool("pretty"),
-	})
-
-	return sl.Desugar()
-}
-
 func serve(cmd *cobra.Command, args []string) error {
 	v := viper.GetViper()
 

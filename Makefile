@@ -15,6 +15,9 @@ CONTAINER_TAG?=latest
 # OpenAPI
 OAPI_CODEGEN_CMD?=go run github.com/deepmap/oapi-codegen/cmd/oapi-codegen
 
+# Database models
+SQLBOILER_CMD?=go run github.com/volatiletech/sqlboiler/v4
+
 ## Targets
 
 .PHONY: build
@@ -55,7 +58,7 @@ lmi-image:
 	$(CONTAINER_BUILD_CMD) -f images/lmi/Dockerfile . -t $(LMI_CONTAINER_IMAGE_NAME):$(CONTAINER_TAG)
 
 .PHONY: generate
-generate: openapi
+generate: openapi models
 
 .PHONY: openapi
 openapi: openapi-types openapi-client openapi-spec
@@ -82,6 +85,13 @@ openapi-spec:
 	@$(OAPI_CODEGEN_CMD) -package v1 \
 		-generate spec \
 		-o api/v1/openapi.gen.go openapi-v1.yaml
+
+models:
+	@echo Generating models...
+	@$(SQLBOILER_CMD) crdb --add-soft-deletes \
+		--config sqlboiler.toml \
+		--always-wrap-errors --wipe --no-tests \
+		--output internal/storage/sql/models
 
 # Tools setup
 $(TOOLS_DIR):
