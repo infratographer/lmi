@@ -2,7 +2,6 @@ package utils
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/spf13/viper"
 	"go.infratographer.com/x/crdbx"
@@ -27,7 +26,5 @@ func dbConfigFromArgs(v *viper.Viper, dbName string) crdbx.Config {
 
 func GetDBConnection(v *viper.Viper, dbName string, tracing bool) (*sql.DB, error) {
 	cfg := dbConfigFromArgs(v, dbName)
-	fmt.Printf("viper: %+v", v)
-	fmt.Printf("cfg: %+v", cfg)
 	return crdbx.NewDB(cfg, tracing)
 }
