@@ -433,7 +433,7 @@ func (o *Permission) Roles(mods ...qm.QueryMod) roleQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.InnerJoin("\"role_permissions\" on \"roles\".\"role_id\" = \"role_permissions\".\"role_id\""),
+		qm.InnerJoin("\"role_permissions\" on \"roles\".\"id\" = \"role_permissions\".\"role_id\""),
 		qm.Where("\"role_permissions\".\"target\"=?", o.Target),
 	)
 
@@ -610,9 +610,9 @@ func (permissionL) LoadRoles(ctx context.Context, e boil.ContextExecutor, singul
 	}
 
 	query := NewQuery(
-		qm.Select("\"roles\".\"role_id\", \"roles\".\"name\", \"roles\".\"description\", \"roles\".\"created_at\", \"roles\".\"updated_at\", \"a\".\"target\""),
+		qm.Select("\"roles\".\"id\", \"roles\".\"name\", \"roles\".\"description\", \"roles\".\"created_at\", \"roles\".\"updated_at\", \"a\".\"target\""),
 		qm.From("\"roles\""),
-		qm.InnerJoin("\"role_permissions\" as \"a\" on \"roles\".\"role_id\" = \"a\".\"role_id\""),
+		qm.InnerJoin("\"role_permissions\" as \"a\" on \"roles\".\"id\" = \"a\".\"role_id\""),
 		qm.WhereIn("\"a\".\"target\" in ?", args...),
 	)
 	if mods != nil {
@@ -631,7 +631,7 @@ func (permissionL) LoadRoles(ctx context.Context, e boil.ContextExecutor, singul
 		one := new(Role)
 		var localJoinCol string
 
-		err = results.Scan(&one.RoleID, &one.Name, &one.Description, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Name, &one.Description, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for roles")
 		}
@@ -754,7 +754,7 @@ func (o *Permission) AddRoles(ctx context.Context, exec boil.ContextExecutor, in
 
 	for _, rel := range related {
 		query := "insert into \"role_permissions\" (\"target\", \"role_id\") values ($1, $2)"
-		values := []interface{}{o.Target, rel.RoleID}
+		values := []interface{}{o.Target, rel.ID}
 
 		if boil.IsDebug(ctx) {
 			writer := boil.DebugWriterFrom(ctx)
@@ -828,7 +828,7 @@ func (o *Permission) RemoveRoles(ctx context.Context, exec boil.ContextExecutor,
 	)
 	values := []interface{}{o.Target}
 	for _, rel := range related {
-		values = append(values, rel.RoleID)
+		values = append(values, rel.ID)
 	}
 
 	if boil.IsDebug(ctx) {

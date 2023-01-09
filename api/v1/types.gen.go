@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+// Assignment defines model for Assignment.
+type Assignment struct {
+	Role    EntityID `json:"role"`
+	Scope   string   `json:"scope"`
+	Subject string   `json:"subject"`
+}
+
 // Error defines model for Error.
 type Error struct {
 	Code    int32  `json:"code"`
@@ -15,11 +22,14 @@ type Error struct {
 
 // NewRole defines model for NewRole.
 type NewRole struct {
-	CreatedAt   *time.Time    `json:"createdAt,omitempty"`
-	Description *string       `json:"description,omitempty"`
-	Name        string        `json:"name"`
-	Permissions *[]Permission `json:"permissions,omitempty"`
-	UpdatedAt   *time.Time    `json:"updatedAt,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Name        string  `json:"name"`
+}
+
+// NewRoleAssignment defines model for NewRoleAssignment.
+type NewRoleAssignment struct {
+	Scope   string `json:"scope"`
+	Subject string `json:"subject"`
 }
 
 // Permission defines model for Permission.
@@ -28,14 +38,28 @@ type Permission struct {
 	Target      string  `json:"target"`
 }
 
+// PermissionIdentifier defines model for PermissionIdentifier.
+type PermissionIdentifier struct {
+	Target string `json:"target"`
+}
+
 // Role defines model for Role.
 type Role struct {
-	CreatedAt   *time.Time    `json:"createdAt,omitempty"`
+	CreatedAt   time.Time     `json:"createdAt"`
 	Description *string       `json:"description,omitempty"`
-	Id          string        `json:"id"`
+	Id          EntityID      `json:"id"`
 	Name        string        `json:"name"`
 	Permissions *[]Permission `json:"permissions,omitempty"`
-	UpdatedAt   *time.Time    `json:"updatedAt,omitempty"`
+	UpdatedAt   time.Time     `json:"updatedAt"`
+}
+
+// RoleInfo defines model for RoleInfo.
+type RoleInfo struct {
+	CreatedAt   time.Time `json:"createdAt"`
+	Description *string   `json:"description,omitempty"`
+	Id          EntityID  `json:"id"`
+	Name        string    `json:"name"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 // GetAssignmentsParams defines parameters for GetAssignments.
@@ -45,18 +69,15 @@ type GetAssignmentsParams struct {
 
 	// Scope scope to return assignments for
 	Scope string `form:"scope" json:"scope"`
+
+	// Role role to return assignments for
+	Role *EntityID `form:"role,omitempty" json:"role,omitempty"`
 }
 
-// RemoveRoleAssignmentJSONBody defines parameters for RemoveRoleAssignment.
-type RemoveRoleAssignmentJSONBody struct {
-	Scope   string `json:"scope"`
-	Subject string `json:"subject"`
-}
-
-// AssignRoleJSONBody defines parameters for AssignRole.
-type AssignRoleJSONBody struct {
-	Scope   string `json:"scope"`
-	Subject string `json:"subject"`
+// GetPermissionsParams defines parameters for GetPermissions.
+type GetPermissionsParams struct {
+	// Target target to return permission information for
+	Target *string `form:"target,omitempty" json:"target,omitempty"`
 }
 
 // CreateRoleJSONRequestBody defines body for CreateRole for application/json ContentType.
@@ -66,13 +87,13 @@ type CreateRoleJSONRequestBody = NewRole
 type UpdateRoleJSONRequestBody = Role
 
 // RemoveRoleAssignmentJSONRequestBody defines body for RemoveRoleAssignment for application/json ContentType.
-type RemoveRoleAssignmentJSONRequestBody RemoveRoleAssignmentJSONBody
+type RemoveRoleAssignmentJSONRequestBody = NewRoleAssignment
 
 // AssignRoleJSONRequestBody defines body for AssignRole for application/json ContentType.
-type AssignRoleJSONRequestBody AssignRoleJSONBody
+type AssignRoleJSONRequestBody = NewRoleAssignment
 
 // RemoveRolePermissionJSONRequestBody defines body for RemoveRolePermission for application/json ContentType.
-type RemoveRolePermissionJSONRequestBody = Permission
+type RemoveRolePermissionJSONRequestBody = PermissionIdentifier
 
 // AddRolePermissionJSONRequestBody defines body for AddRolePermission for application/json ContentType.
-type AddRolePermissionJSONRequestBody = Permission
+type AddRolePermissionJSONRequestBody = PermissionIdentifier

@@ -93,7 +93,7 @@ type ClientInterface interface {
 	GetAssignments(ctx context.Context, params *GetAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPermissions request
-	GetPermissions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetPermissions(ctx context.Context, params *GetPermissionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetRoles request
 	GetRoles(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -104,41 +104,41 @@ type ClientInterface interface {
 	CreateRole(ctx context.Context, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteRole request
-	DeleteRole(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteRole(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetRole request
-	GetRole(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetRole(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateRole request with any body
-	UpdateRoleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateRoleWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateRole(ctx context.Context, id string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateRole(ctx context.Context, id EntityID, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RemoveRoleAssignment request with any body
-	RemoveRoleAssignmentWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	RemoveRoleAssignmentWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	RemoveRoleAssignment(ctx context.Context, id string, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	RemoveRoleAssignment(ctx context.Context, id EntityID, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetRoleAssignments request
-	GetRoleAssignments(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetRoleAssignments(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AssignRole request with any body
-	AssignRoleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	AssignRoleWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	AssignRole(ctx context.Context, id string, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	AssignRole(ctx context.Context, id EntityID, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RemoveRolePermission request with any body
-	RemoveRolePermissionWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	RemoveRolePermissionWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	RemoveRolePermission(ctx context.Context, id string, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	RemoveRolePermission(ctx context.Context, id EntityID, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetRolePermissions request
-	GetRolePermissions(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetRolePermissions(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AddRolePermission request with any body
-	AddRolePermissionWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	AddRolePermissionWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	AddRolePermission(ctx context.Context, id string, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	AddRolePermission(ctx context.Context, id EntityID, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetAssignments(ctx context.Context, params *GetAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -153,8 +153,8 @@ func (c *Client) GetAssignments(ctx context.Context, params *GetAssignmentsParam
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetPermissions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPermissionsRequest(c.Server)
+func (c *Client) GetPermissions(ctx context.Context, params *GetPermissionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPermissionsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +201,7 @@ func (c *Client) CreateRole(ctx context.Context, body CreateRoleJSONRequestBody,
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteRole(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) DeleteRole(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteRoleRequest(c.Server, id)
 	if err != nil {
 		return nil, err
@@ -213,7 +213,7 @@ func (c *Client) DeleteRole(ctx context.Context, id string, reqEditors ...Reques
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetRole(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) GetRole(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetRoleRequest(c.Server, id)
 	if err != nil {
 		return nil, err
@@ -225,7 +225,7 @@ func (c *Client) GetRole(ctx context.Context, id string, reqEditors ...RequestEd
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateRoleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) UpdateRoleWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateRoleRequestWithBody(c.Server, id, contentType, body)
 	if err != nil {
 		return nil, err
@@ -237,7 +237,7 @@ func (c *Client) UpdateRoleWithBody(ctx context.Context, id string, contentType 
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateRole(ctx context.Context, id string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) UpdateRole(ctx context.Context, id EntityID, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateRoleRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
@@ -249,7 +249,7 @@ func (c *Client) UpdateRole(ctx context.Context, id string, body UpdateRoleJSONR
 	return c.Client.Do(req)
 }
 
-func (c *Client) RemoveRoleAssignmentWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) RemoveRoleAssignmentWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRemoveRoleAssignmentRequestWithBody(c.Server, id, contentType, body)
 	if err != nil {
 		return nil, err
@@ -261,7 +261,7 @@ func (c *Client) RemoveRoleAssignmentWithBody(ctx context.Context, id string, co
 	return c.Client.Do(req)
 }
 
-func (c *Client) RemoveRoleAssignment(ctx context.Context, id string, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) RemoveRoleAssignment(ctx context.Context, id EntityID, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRemoveRoleAssignmentRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
@@ -273,7 +273,7 @@ func (c *Client) RemoveRoleAssignment(ctx context.Context, id string, body Remov
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetRoleAssignments(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) GetRoleAssignments(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetRoleAssignmentsRequest(c.Server, id)
 	if err != nil {
 		return nil, err
@@ -285,7 +285,7 @@ func (c *Client) GetRoleAssignments(ctx context.Context, id string, reqEditors .
 	return c.Client.Do(req)
 }
 
-func (c *Client) AssignRoleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) AssignRoleWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAssignRoleRequestWithBody(c.Server, id, contentType, body)
 	if err != nil {
 		return nil, err
@@ -297,7 +297,7 @@ func (c *Client) AssignRoleWithBody(ctx context.Context, id string, contentType 
 	return c.Client.Do(req)
 }
 
-func (c *Client) AssignRole(ctx context.Context, id string, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) AssignRole(ctx context.Context, id EntityID, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAssignRoleRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
@@ -309,7 +309,7 @@ func (c *Client) AssignRole(ctx context.Context, id string, body AssignRoleJSONR
 	return c.Client.Do(req)
 }
 
-func (c *Client) RemoveRolePermissionWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) RemoveRolePermissionWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRemoveRolePermissionRequestWithBody(c.Server, id, contentType, body)
 	if err != nil {
 		return nil, err
@@ -321,7 +321,7 @@ func (c *Client) RemoveRolePermissionWithBody(ctx context.Context, id string, co
 	return c.Client.Do(req)
 }
 
-func (c *Client) RemoveRolePermission(ctx context.Context, id string, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) RemoveRolePermission(ctx context.Context, id EntityID, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRemoveRolePermissionRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
@@ -333,7 +333,7 @@ func (c *Client) RemoveRolePermission(ctx context.Context, id string, body Remov
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetRolePermissions(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) GetRolePermissions(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetRolePermissionsRequest(c.Server, id)
 	if err != nil {
 		return nil, err
@@ -345,7 +345,7 @@ func (c *Client) GetRolePermissions(ctx context.Context, id string, reqEditors .
 	return c.Client.Do(req)
 }
 
-func (c *Client) AddRolePermissionWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) AddRolePermissionWithBody(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddRolePermissionRequestWithBody(c.Server, id, contentType, body)
 	if err != nil {
 		return nil, err
@@ -357,7 +357,7 @@ func (c *Client) AddRolePermissionWithBody(ctx context.Context, id string, conte
 	return c.Client.Do(req)
 }
 
-func (c *Client) AddRolePermission(ctx context.Context, id string, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) AddRolePermission(ctx context.Context, id EntityID, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddRolePermissionRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
@@ -414,6 +414,22 @@ func NewGetAssignmentsRequest(server string, params *GetAssignmentsParams) (*htt
 		}
 	}
 
+	if params.Role != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "role", runtime.ParamLocationQuery, *params.Role); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
 	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -425,7 +441,7 @@ func NewGetAssignmentsRequest(server string, params *GetAssignmentsParams) (*htt
 }
 
 // NewGetPermissionsRequest generates requests for GetPermissions
-func NewGetPermissionsRequest(server string) (*http.Request, error) {
+func NewGetPermissionsRequest(server string, params *GetPermissionsParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -442,6 +458,26 @@ func NewGetPermissionsRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	queryValues := queryURL.Query()
+
+	if params.Target != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "target", runtime.ParamLocationQuery, *params.Target); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
@@ -519,7 +555,7 @@ func NewCreateRoleRequestWithBody(server string, contentType string, body io.Rea
 }
 
 // NewDeleteRoleRequest generates requests for DeleteRole
-func NewDeleteRoleRequest(server string, id string) (*http.Request, error) {
+func NewDeleteRoleRequest(server string, id EntityID) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -553,7 +589,7 @@ func NewDeleteRoleRequest(server string, id string) (*http.Request, error) {
 }
 
 // NewGetRoleRequest generates requests for GetRole
-func NewGetRoleRequest(server string, id string) (*http.Request, error) {
+func NewGetRoleRequest(server string, id EntityID) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -587,7 +623,7 @@ func NewGetRoleRequest(server string, id string) (*http.Request, error) {
 }
 
 // NewUpdateRoleRequest calls the generic UpdateRole builder with application/json body
-func NewUpdateRoleRequest(server string, id string, body UpdateRoleJSONRequestBody) (*http.Request, error) {
+func NewUpdateRoleRequest(server string, id EntityID, body UpdateRoleJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -598,7 +634,7 @@ func NewUpdateRoleRequest(server string, id string, body UpdateRoleJSONRequestBo
 }
 
 // NewUpdateRoleRequestWithBody generates requests for UpdateRole with any type of body
-func NewUpdateRoleRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateRoleRequestWithBody(server string, id EntityID, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -634,7 +670,7 @@ func NewUpdateRoleRequestWithBody(server string, id string, contentType string, 
 }
 
 // NewRemoveRoleAssignmentRequest calls the generic RemoveRoleAssignment builder with application/json body
-func NewRemoveRoleAssignmentRequest(server string, id string, body RemoveRoleAssignmentJSONRequestBody) (*http.Request, error) {
+func NewRemoveRoleAssignmentRequest(server string, id EntityID, body RemoveRoleAssignmentJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -645,7 +681,7 @@ func NewRemoveRoleAssignmentRequest(server string, id string, body RemoveRoleAss
 }
 
 // NewRemoveRoleAssignmentRequestWithBody generates requests for RemoveRoleAssignment with any type of body
-func NewRemoveRoleAssignmentRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+func NewRemoveRoleAssignmentRequestWithBody(server string, id EntityID, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -681,7 +717,7 @@ func NewRemoveRoleAssignmentRequestWithBody(server string, id string, contentTyp
 }
 
 // NewGetRoleAssignmentsRequest generates requests for GetRoleAssignments
-func NewGetRoleAssignmentsRequest(server string, id string) (*http.Request, error) {
+func NewGetRoleAssignmentsRequest(server string, id EntityID) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -715,7 +751,7 @@ func NewGetRoleAssignmentsRequest(server string, id string) (*http.Request, erro
 }
 
 // NewAssignRoleRequest calls the generic AssignRole builder with application/json body
-func NewAssignRoleRequest(server string, id string, body AssignRoleJSONRequestBody) (*http.Request, error) {
+func NewAssignRoleRequest(server string, id EntityID, body AssignRoleJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -726,7 +762,7 @@ func NewAssignRoleRequest(server string, id string, body AssignRoleJSONRequestBo
 }
 
 // NewAssignRoleRequestWithBody generates requests for AssignRole with any type of body
-func NewAssignRoleRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+func NewAssignRoleRequestWithBody(server string, id EntityID, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -762,7 +798,7 @@ func NewAssignRoleRequestWithBody(server string, id string, contentType string, 
 }
 
 // NewRemoveRolePermissionRequest calls the generic RemoveRolePermission builder with application/json body
-func NewRemoveRolePermissionRequest(server string, id string, body RemoveRolePermissionJSONRequestBody) (*http.Request, error) {
+func NewRemoveRolePermissionRequest(server string, id EntityID, body RemoveRolePermissionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -773,7 +809,7 @@ func NewRemoveRolePermissionRequest(server string, id string, body RemoveRolePer
 }
 
 // NewRemoveRolePermissionRequestWithBody generates requests for RemoveRolePermission with any type of body
-func NewRemoveRolePermissionRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+func NewRemoveRolePermissionRequestWithBody(server string, id EntityID, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -809,7 +845,7 @@ func NewRemoveRolePermissionRequestWithBody(server string, id string, contentTyp
 }
 
 // NewGetRolePermissionsRequest generates requests for GetRolePermissions
-func NewGetRolePermissionsRequest(server string, id string) (*http.Request, error) {
+func NewGetRolePermissionsRequest(server string, id EntityID) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -843,7 +879,7 @@ func NewGetRolePermissionsRequest(server string, id string) (*http.Request, erro
 }
 
 // NewAddRolePermissionRequest calls the generic AddRolePermission builder with application/json body
-func NewAddRolePermissionRequest(server string, id string, body AddRolePermissionJSONRequestBody) (*http.Request, error) {
+func NewAddRolePermissionRequest(server string, id EntityID, body AddRolePermissionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -854,7 +890,7 @@ func NewAddRolePermissionRequest(server string, id string, body AddRolePermissio
 }
 
 // NewAddRolePermissionRequestWithBody generates requests for AddRolePermission with any type of body
-func NewAddRolePermissionRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+func NewAddRolePermissionRequestWithBody(server string, id EntityID, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -936,7 +972,7 @@ type ClientWithResponsesInterface interface {
 	GetAssignmentsWithResponse(ctx context.Context, params *GetAssignmentsParams, reqEditors ...RequestEditorFn) (*GetAssignmentsResponse, error)
 
 	// GetPermissions request
-	GetPermissionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPermissionsResponse, error)
+	GetPermissionsWithResponse(ctx context.Context, params *GetPermissionsParams, reqEditors ...RequestEditorFn) (*GetPermissionsResponse, error)
 
 	// GetRoles request
 	GetRolesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetRolesResponse, error)
@@ -947,52 +983,48 @@ type ClientWithResponsesInterface interface {
 	CreateRoleWithResponse(ctx context.Context, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateRoleResponse, error)
 
 	// DeleteRole request
-	DeleteRoleWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteRoleResponse, error)
+	DeleteRoleWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*DeleteRoleResponse, error)
 
 	// GetRole request
-	GetRoleWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetRoleResponse, error)
+	GetRoleWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*GetRoleResponse, error)
 
 	// UpdateRole request with any body
-	UpdateRoleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error)
+	UpdateRoleWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error)
 
-	UpdateRoleWithResponse(ctx context.Context, id string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error)
+	UpdateRoleWithResponse(ctx context.Context, id EntityID, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error)
 
 	// RemoveRoleAssignment request with any body
-	RemoveRoleAssignmentWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error)
+	RemoveRoleAssignmentWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error)
 
-	RemoveRoleAssignmentWithResponse(ctx context.Context, id string, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error)
+	RemoveRoleAssignmentWithResponse(ctx context.Context, id EntityID, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error)
 
 	// GetRoleAssignments request
-	GetRoleAssignmentsWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetRoleAssignmentsResponse, error)
+	GetRoleAssignmentsWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*GetRoleAssignmentsResponse, error)
 
 	// AssignRole request with any body
-	AssignRoleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error)
+	AssignRoleWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error)
 
-	AssignRoleWithResponse(ctx context.Context, id string, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error)
+	AssignRoleWithResponse(ctx context.Context, id EntityID, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error)
 
 	// RemoveRolePermission request with any body
-	RemoveRolePermissionWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error)
+	RemoveRolePermissionWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error)
 
-	RemoveRolePermissionWithResponse(ctx context.Context, id string, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error)
+	RemoveRolePermissionWithResponse(ctx context.Context, id EntityID, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error)
 
 	// GetRolePermissions request
-	GetRolePermissionsWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetRolePermissionsResponse, error)
+	GetRolePermissionsWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*GetRolePermissionsResponse, error)
 
 	// AddRolePermission request with any body
-	AddRolePermissionWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error)
+	AddRolePermissionWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error)
 
-	AddRolePermissionWithResponse(ctx context.Context, id string, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error)
+	AddRolePermissionWithResponse(ctx context.Context, id EntityID, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error)
 }
 
 type GetAssignmentsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]struct {
-		Role    string `json:"role"`
-		Scope   string `json:"scope"`
-		Subject string `json:"subject"`
-	}
-	JSONDefault *Error
+	JSON200      *[]Assignment
+	JSONDefault  *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -1037,7 +1069,7 @@ func (r GetPermissionsResponse) StatusCode() int {
 type GetRolesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]Role
+	JSON200      *[]RoleInfo
 	JSONDefault  *Error
 }
 
@@ -1173,11 +1205,8 @@ func (r RemoveRoleAssignmentResponse) StatusCode() int {
 type GetRoleAssignmentsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]struct {
-		Scope   string `json:"scope"`
-		Subject string `json:"subject"`
-	}
-	JSONDefault *Error
+	JSON200      *[]Assignment
+	JSONDefault  *Error
 }
 
 // Status returns HTTPResponse.Status
@@ -1221,7 +1250,6 @@ func (r AssignRoleResponse) StatusCode() int {
 type RemoveRolePermissionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Permission
 	JSONDefault  *Error
 }
 
@@ -1244,7 +1272,7 @@ func (r RemoveRolePermissionResponse) StatusCode() int {
 type GetRolePermissionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]Permission
+	JSON200      *[]PermissionIdentifier
 	JSONDefault  *Error
 }
 
@@ -1267,7 +1295,6 @@ func (r GetRolePermissionsResponse) StatusCode() int {
 type AddRolePermissionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Permission
 	JSONDefault  *Error
 }
 
@@ -1297,8 +1324,8 @@ func (c *ClientWithResponses) GetAssignmentsWithResponse(ctx context.Context, pa
 }
 
 // GetPermissionsWithResponse request returning *GetPermissionsResponse
-func (c *ClientWithResponses) GetPermissionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPermissionsResponse, error) {
-	rsp, err := c.GetPermissions(ctx, reqEditors...)
+func (c *ClientWithResponses) GetPermissionsWithResponse(ctx context.Context, params *GetPermissionsParams, reqEditors ...RequestEditorFn) (*GetPermissionsResponse, error) {
+	rsp, err := c.GetPermissions(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -1332,7 +1359,7 @@ func (c *ClientWithResponses) CreateRoleWithResponse(ctx context.Context, body C
 }
 
 // DeleteRoleWithResponse request returning *DeleteRoleResponse
-func (c *ClientWithResponses) DeleteRoleWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteRoleResponse, error) {
+func (c *ClientWithResponses) DeleteRoleWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*DeleteRoleResponse, error) {
 	rsp, err := c.DeleteRole(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1341,7 +1368,7 @@ func (c *ClientWithResponses) DeleteRoleWithResponse(ctx context.Context, id str
 }
 
 // GetRoleWithResponse request returning *GetRoleResponse
-func (c *ClientWithResponses) GetRoleWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetRoleResponse, error) {
+func (c *ClientWithResponses) GetRoleWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*GetRoleResponse, error) {
 	rsp, err := c.GetRole(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1350,7 +1377,7 @@ func (c *ClientWithResponses) GetRoleWithResponse(ctx context.Context, id string
 }
 
 // UpdateRoleWithBodyWithResponse request with arbitrary body returning *UpdateRoleResponse
-func (c *ClientWithResponses) UpdateRoleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error) {
+func (c *ClientWithResponses) UpdateRoleWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error) {
 	rsp, err := c.UpdateRoleWithBody(ctx, id, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1358,7 +1385,7 @@ func (c *ClientWithResponses) UpdateRoleWithBodyWithResponse(ctx context.Context
 	return ParseUpdateRoleResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateRoleWithResponse(ctx context.Context, id string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error) {
+func (c *ClientWithResponses) UpdateRoleWithResponse(ctx context.Context, id EntityID, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error) {
 	rsp, err := c.UpdateRole(ctx, id, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1367,7 +1394,7 @@ func (c *ClientWithResponses) UpdateRoleWithResponse(ctx context.Context, id str
 }
 
 // RemoveRoleAssignmentWithBodyWithResponse request with arbitrary body returning *RemoveRoleAssignmentResponse
-func (c *ClientWithResponses) RemoveRoleAssignmentWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error) {
+func (c *ClientWithResponses) RemoveRoleAssignmentWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error) {
 	rsp, err := c.RemoveRoleAssignmentWithBody(ctx, id, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1375,7 +1402,7 @@ func (c *ClientWithResponses) RemoveRoleAssignmentWithBodyWithResponse(ctx conte
 	return ParseRemoveRoleAssignmentResponse(rsp)
 }
 
-func (c *ClientWithResponses) RemoveRoleAssignmentWithResponse(ctx context.Context, id string, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error) {
+func (c *ClientWithResponses) RemoveRoleAssignmentWithResponse(ctx context.Context, id EntityID, body RemoveRoleAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRoleAssignmentResponse, error) {
 	rsp, err := c.RemoveRoleAssignment(ctx, id, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1384,7 +1411,7 @@ func (c *ClientWithResponses) RemoveRoleAssignmentWithResponse(ctx context.Conte
 }
 
 // GetRoleAssignmentsWithResponse request returning *GetRoleAssignmentsResponse
-func (c *ClientWithResponses) GetRoleAssignmentsWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetRoleAssignmentsResponse, error) {
+func (c *ClientWithResponses) GetRoleAssignmentsWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*GetRoleAssignmentsResponse, error) {
 	rsp, err := c.GetRoleAssignments(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1393,7 +1420,7 @@ func (c *ClientWithResponses) GetRoleAssignmentsWithResponse(ctx context.Context
 }
 
 // AssignRoleWithBodyWithResponse request with arbitrary body returning *AssignRoleResponse
-func (c *ClientWithResponses) AssignRoleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error) {
+func (c *ClientWithResponses) AssignRoleWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error) {
 	rsp, err := c.AssignRoleWithBody(ctx, id, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1401,7 +1428,7 @@ func (c *ClientWithResponses) AssignRoleWithBodyWithResponse(ctx context.Context
 	return ParseAssignRoleResponse(rsp)
 }
 
-func (c *ClientWithResponses) AssignRoleWithResponse(ctx context.Context, id string, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error) {
+func (c *ClientWithResponses) AssignRoleWithResponse(ctx context.Context, id EntityID, body AssignRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignRoleResponse, error) {
 	rsp, err := c.AssignRole(ctx, id, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1410,7 +1437,7 @@ func (c *ClientWithResponses) AssignRoleWithResponse(ctx context.Context, id str
 }
 
 // RemoveRolePermissionWithBodyWithResponse request with arbitrary body returning *RemoveRolePermissionResponse
-func (c *ClientWithResponses) RemoveRolePermissionWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error) {
+func (c *ClientWithResponses) RemoveRolePermissionWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error) {
 	rsp, err := c.RemoveRolePermissionWithBody(ctx, id, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1418,7 +1445,7 @@ func (c *ClientWithResponses) RemoveRolePermissionWithBodyWithResponse(ctx conte
 	return ParseRemoveRolePermissionResponse(rsp)
 }
 
-func (c *ClientWithResponses) RemoveRolePermissionWithResponse(ctx context.Context, id string, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error) {
+func (c *ClientWithResponses) RemoveRolePermissionWithResponse(ctx context.Context, id EntityID, body RemoveRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveRolePermissionResponse, error) {
 	rsp, err := c.RemoveRolePermission(ctx, id, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1427,7 +1454,7 @@ func (c *ClientWithResponses) RemoveRolePermissionWithResponse(ctx context.Conte
 }
 
 // GetRolePermissionsWithResponse request returning *GetRolePermissionsResponse
-func (c *ClientWithResponses) GetRolePermissionsWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetRolePermissionsResponse, error) {
+func (c *ClientWithResponses) GetRolePermissionsWithResponse(ctx context.Context, id EntityID, reqEditors ...RequestEditorFn) (*GetRolePermissionsResponse, error) {
 	rsp, err := c.GetRolePermissions(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1436,7 +1463,7 @@ func (c *ClientWithResponses) GetRolePermissionsWithResponse(ctx context.Context
 }
 
 // AddRolePermissionWithBodyWithResponse request with arbitrary body returning *AddRolePermissionResponse
-func (c *ClientWithResponses) AddRolePermissionWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error) {
+func (c *ClientWithResponses) AddRolePermissionWithBodyWithResponse(ctx context.Context, id EntityID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error) {
 	rsp, err := c.AddRolePermissionWithBody(ctx, id, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1444,7 +1471,7 @@ func (c *ClientWithResponses) AddRolePermissionWithBodyWithResponse(ctx context.
 	return ParseAddRolePermissionResponse(rsp)
 }
 
-func (c *ClientWithResponses) AddRolePermissionWithResponse(ctx context.Context, id string, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error) {
+func (c *ClientWithResponses) AddRolePermissionWithResponse(ctx context.Context, id EntityID, body AddRolePermissionJSONRequestBody, reqEditors ...RequestEditorFn) (*AddRolePermissionResponse, error) {
 	rsp, err := c.AddRolePermission(ctx, id, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -1467,11 +1494,7 @@ func ParseGetAssignmentsResponse(rsp *http.Response) (*GetAssignmentsResponse, e
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []struct {
-			Role    string `json:"role"`
-			Scope   string `json:"scope"`
-			Subject string `json:"subject"`
-		}
+		var dest []Assignment
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -1537,7 +1560,7 @@ func ParseGetRolesResponse(rsp *http.Response) (*GetRolesResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Role
+		var dest []RoleInfo
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -1721,10 +1744,7 @@ func ParseGetRoleAssignmentsResponse(rsp *http.Response) (*GetRoleAssignmentsRes
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []struct {
-			Scope   string `json:"scope"`
-			Subject string `json:"subject"`
-		}
+		var dest []Assignment
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -1782,13 +1802,6 @@ func ParseRemoveRolePermissionResponse(rsp *http.Response) (*RemoveRolePermissio
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Permission
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest Error
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -1816,7 +1829,7 @@ func ParseGetRolePermissionsResponse(rsp *http.Response) (*GetRolePermissionsRes
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Permission
+		var dest []PermissionIdentifier
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -1848,13 +1861,6 @@ func ParseAddRolePermissionResponse(rsp *http.Response) (*AddRolePermissionRespo
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Permission
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest Error
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

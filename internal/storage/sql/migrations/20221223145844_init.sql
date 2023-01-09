@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS permissions (
 --           permissions depending on the directory
 --           as well as global roles people can use.
 CREATE TABLE IF NOT EXISTS roles (
-    role_id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -39,12 +39,12 @@ CREATE TABLE IF NOT EXISTS role_permissions (
     role_id UUID NOT NULL,
     target TEXT NOT NULL,
     PRIMARY KEY (role_id, target),
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
     FOREIGN KEY (target) REFERENCES permissions(target) ON DELETE CASCADE
 );
 
 -- role_assignments tab;
--- It stores the subjects that are assigned to a rol;
+-- It stores the subjects that are assigned to a role;
 CREATE TABLE IF NOT EXISTS role_assignments (
     id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
     role_id UUID NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS role_assignments (
     scope UUID NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
     FOREIGN KEY (subject_id) REFERENCES tracked_subjects(subject_id) ON DELETE CASCADE,
     FOREIGN KEY (scope) REFERENCES tracked_directories(id) ON DELETE CASCADE
 );
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS effective_permissions (
     FOREIGN KEY (subject_id) REFERENCES tracked_subjects(subject_id) ON DELETE CASCADE,
     FOREIGN KEY (target) REFERENCES permissions(target) ON DELETE CASCADE,
     FOREIGN KEY (scope) REFERENCES tracked_directories(id) ON DELETE CASCADE,
-    FOREIGN KEY (from_role) REFERENCES roles(role_id) ON DELETE CASCADE
+    FOREIGN KEY (from_role) REFERENCES roles(id) ON DELETE CASCADE
 );
 -- +goose StatementEnd
 

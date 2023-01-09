@@ -3,15 +3,15 @@ package cmd
 import (
 	"fmt"
 
-	dbutils "github.com/infratographer/lmi/internal/storage/sql/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.infratographer.com/x/crdbx"
 
 	"github.com/infratographer/lmi/internal/storage/sql/migrations"
+	dbutils "github.com/infratographer/lmi/internal/storage/sql/utils"
 )
 
-// migrateCmd represents the migrate command
+// migrateCmd represents the migrate command.
 var migrateCmd = &cobra.Command{
 	Use:   "migrate",
 	Short: "Executes a database migration",

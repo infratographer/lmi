@@ -23,7 +23,7 @@ import (
 
 // Role is an object representing the database table.
 type Role struct {
-	RoleID      string    `boil:"role_id" json:"role_id" toml:"role_id" yaml:"role_id"`
+	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Name        string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
 	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
@@ -34,13 +34,13 @@ type Role struct {
 }
 
 var RoleColumns = struct {
-	RoleID      string
+	ID          string
 	Name        string
 	Description string
 	CreatedAt   string
 	UpdatedAt   string
 }{
-	RoleID:      "role_id",
+	ID:          "id",
 	Name:        "name",
 	Description: "description",
 	CreatedAt:   "created_at",
@@ -48,13 +48,13 @@ var RoleColumns = struct {
 }
 
 var RoleTableColumns = struct {
-	RoleID      string
+	ID          string
 	Name        string
 	Description string
 	CreatedAt   string
 	UpdatedAt   string
 }{
-	RoleID:      "roles.role_id",
+	ID:          "roles.id",
 	Name:        "roles.name",
 	Description: "roles.description",
 	CreatedAt:   "roles.created_at",
@@ -64,13 +64,13 @@ var RoleTableColumns = struct {
 // Generated where
 
 var RoleWhere = struct {
-	RoleID      whereHelperstring
+	ID          whereHelperstring
 	Name        whereHelperstring
 	Description whereHelperstring
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpertime_Time
 }{
-	RoleID:      whereHelperstring{field: "\"roles\".\"role_id\""},
+	ID:          whereHelperstring{field: "\"roles\".\"id\""},
 	Name:        whereHelperstring{field: "\"roles\".\"name\""},
 	Description: whereHelperstring{field: "\"roles\".\"description\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"roles\".\"created_at\""},
@@ -125,10 +125,10 @@ func (r *roleR) GetTargetPermissions() PermissionSlice {
 type roleL struct{}
 
 var (
-	roleAllColumns            = []string{"role_id", "name", "description", "created_at", "updated_at"}
+	roleAllColumns            = []string{"id", "name", "description", "created_at", "updated_at"}
 	roleColumnsWithoutDefault = []string{"name"}
-	roleColumnsWithDefault    = []string{"role_id", "description", "created_at", "updated_at"}
-	rolePrimaryKeyColumns     = []string{"role_id"}
+	roleColumnsWithDefault    = []string{"id", "description", "created_at", "updated_at"}
+	rolePrimaryKeyColumns     = []string{"id"}
 	roleGeneratedColumns      = []string{}
 )
 
@@ -415,7 +415,7 @@ func (o *Role) FromRoleEffectivePermissions(mods ...qm.QueryMod) effectivePermis
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"effective_permissions\".\"from_role\"=?", o.RoleID),
+		qm.Where("\"effective_permissions\".\"from_role\"=?", o.ID),
 	)
 
 	return EffectivePermissions(queryMods...)
@@ -429,7 +429,7 @@ func (o *Role) RoleAssignments(mods ...qm.QueryMod) roleAssignmentQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"role_assignments\".\"role_id\"=?", o.RoleID),
+		qm.Where("\"role_assignments\".\"role_id\"=?", o.ID),
 	)
 
 	return RoleAssignments(queryMods...)
@@ -444,7 +444,7 @@ func (o *Role) TargetPermissions(mods ...qm.QueryMod) permissionQuery {
 
 	queryMods = append(queryMods,
 		qm.InnerJoin("\"role_permissions\" on \"permissions\".\"target\" = \"role_permissions\".\"target\""),
-		qm.Where("\"role_permissions\".\"role_id\"=?", o.RoleID),
+		qm.Where("\"role_permissions\".\"role_id\"=?", o.ID),
 	)
 
 	return Permissions(queryMods...)
@@ -483,7 +483,7 @@ func (roleL) LoadFromRoleEffectivePermissions(ctx context.Context, e boil.Contex
 		if object.R == nil {
 			object.R = &roleR{}
 		}
-		args = append(args, object.RoleID)
+		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
@@ -492,12 +492,12 @@ func (roleL) LoadFromRoleEffectivePermissions(ctx context.Context, e boil.Contex
 			}
 
 			for _, a := range args {
-				if a == obj.RoleID {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.RoleID)
+			args = append(args, obj.ID)
 		}
 	}
 
@@ -550,7 +550,7 @@ func (roleL) LoadFromRoleEffectivePermissions(ctx context.Context, e boil.Contex
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.RoleID == foreign.FromRole {
+			if local.ID == foreign.FromRole {
 				local.R.FromRoleEffectivePermissions = append(local.R.FromRoleEffectivePermissions, foreign)
 				if foreign.R == nil {
 					foreign.R = &effectivePermissionR{}
@@ -597,7 +597,7 @@ func (roleL) LoadRoleAssignments(ctx context.Context, e boil.ContextExecutor, si
 		if object.R == nil {
 			object.R = &roleR{}
 		}
-		args = append(args, object.RoleID)
+		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
@@ -606,12 +606,12 @@ func (roleL) LoadRoleAssignments(ctx context.Context, e boil.ContextExecutor, si
 			}
 
 			for _, a := range args {
-				if a == obj.RoleID {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.RoleID)
+			args = append(args, obj.ID)
 		}
 	}
 
@@ -664,7 +664,7 @@ func (roleL) LoadRoleAssignments(ctx context.Context, e boil.ContextExecutor, si
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.RoleID == foreign.RoleID {
+			if local.ID == foreign.RoleID {
 				local.R.RoleAssignments = append(local.R.RoleAssignments, foreign)
 				if foreign.R == nil {
 					foreign.R = &roleAssignmentR{}
@@ -711,7 +711,7 @@ func (roleL) LoadTargetPermissions(ctx context.Context, e boil.ContextExecutor, 
 		if object.R == nil {
 			object.R = &roleR{}
 		}
-		args = append(args, object.RoleID)
+		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
@@ -720,12 +720,12 @@ func (roleL) LoadTargetPermissions(ctx context.Context, e boil.ContextExecutor, 
 			}
 
 			for _, a := range args {
-				if a == obj.RoleID {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.RoleID)
+			args = append(args, obj.ID)
 		}
 	}
 
@@ -795,7 +795,7 @@ func (roleL) LoadTargetPermissions(ctx context.Context, e boil.ContextExecutor, 
 	for i, foreign := range resultSlice {
 		localJoinCol := localJoinCols[i]
 		for _, local := range slice {
-			if local.RoleID == localJoinCol {
+			if local.ID == localJoinCol {
 				local.R.TargetPermissions = append(local.R.TargetPermissions, foreign)
 				if foreign.R == nil {
 					foreign.R = &permissionR{}
@@ -817,7 +817,7 @@ func (o *Role) AddFromRoleEffectivePermissions(ctx context.Context, exec boil.Co
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.FromRole = o.RoleID
+			rel.FromRole = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -827,7 +827,7 @@ func (o *Role) AddFromRoleEffectivePermissions(ctx context.Context, exec boil.Co
 				strmangle.SetParamNames("\"", "\"", 1, []string{"from_role"}),
 				strmangle.WhereClause("\"", "\"", 2, effectivePermissionPrimaryKeyColumns),
 			)
-			values := []interface{}{o.RoleID, rel.SubjectID, rel.Target, rel.Scope}
+			values := []interface{}{o.ID, rel.SubjectID, rel.Target, rel.Scope}
 
 			if boil.IsDebug(ctx) {
 				writer := boil.DebugWriterFrom(ctx)
@@ -838,7 +838,7 @@ func (o *Role) AddFromRoleEffectivePermissions(ctx context.Context, exec boil.Co
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.FromRole = o.RoleID
+			rel.FromRole = o.ID
 		}
 	}
 
@@ -870,7 +870,7 @@ func (o *Role) AddRoleAssignments(ctx context.Context, exec boil.ContextExecutor
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.RoleID = o.RoleID
+			rel.RoleID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -880,7 +880,7 @@ func (o *Role) AddRoleAssignments(ctx context.Context, exec boil.ContextExecutor
 				strmangle.SetParamNames("\"", "\"", 1, []string{"role_id"}),
 				strmangle.WhereClause("\"", "\"", 2, roleAssignmentPrimaryKeyColumns),
 			)
-			values := []interface{}{o.RoleID, rel.ID}
+			values := []interface{}{o.ID, rel.ID}
 
 			if boil.IsDebug(ctx) {
 				writer := boil.DebugWriterFrom(ctx)
@@ -891,7 +891,7 @@ func (o *Role) AddRoleAssignments(ctx context.Context, exec boil.ContextExecutor
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.RoleID = o.RoleID
+			rel.RoleID = o.ID
 		}
 	}
 
@@ -931,7 +931,7 @@ func (o *Role) AddTargetPermissions(ctx context.Context, exec boil.ContextExecut
 
 	for _, rel := range related {
 		query := "insert into \"role_permissions\" (\"role_id\", \"target\") values ($1, $2)"
-		values := []interface{}{o.RoleID, rel.Target}
+		values := []interface{}{o.ID, rel.Target}
 
 		if boil.IsDebug(ctx) {
 			writer := boil.DebugWriterFrom(ctx)
@@ -971,7 +971,7 @@ func (o *Role) AddTargetPermissions(ctx context.Context, exec boil.ContextExecut
 // Sets related.R.Roles's TargetPermissions accordingly.
 func (o *Role) SetTargetPermissions(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Permission) error {
 	query := "delete from \"role_permissions\" where \"role_id\" = $1"
-	values := []interface{}{o.RoleID}
+	values := []interface{}{o.ID}
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, query)
@@ -1003,7 +1003,7 @@ func (o *Role) RemoveTargetPermissions(ctx context.Context, exec boil.ContextExe
 		"delete from \"role_permissions\" where \"role_id\" = $1 and \"target\" in (%s)",
 		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
 	)
-	values := []interface{}{o.RoleID}
+	values := []interface{}{o.ID}
 	for _, rel := range related {
 		values = append(values, rel.Target)
 	}
@@ -1046,7 +1046,7 @@ func removeTargetPermissionsFromRolesSlice(o *Role, related []*Permission) {
 			continue
 		}
 		for i, ri := range rel.R.Roles {
-			if o.RoleID != ri.RoleID {
+			if o.ID != ri.ID {
 				continue
 			}
 
@@ -1073,7 +1073,7 @@ func Roles(mods ...qm.QueryMod) roleQuery {
 
 // FindRole retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindRole(ctx context.Context, exec boil.ContextExecutor, roleID string, selectCols ...string) (*Role, error) {
+func FindRole(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*Role, error) {
 	roleObj := &Role{}
 
 	sel := "*"
@@ -1081,10 +1081,10 @@ func FindRole(ctx context.Context, exec boil.ContextExecutor, roleID string, sel
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"roles\" where \"role_id\"=$1", sel,
+		"select %s from \"roles\" where \"id\"=$1", sel,
 	)
 
-	q := queries.Raw(query, roleID)
+	q := queries.Raw(query, iD)
 
 	err := q.Bind(ctx, exec, roleObj)
 	if err != nil {
@@ -1333,7 +1333,7 @@ func (o *Role) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), rolePrimaryKeyMapping)
-	sql := "DELETE FROM \"roles\" WHERE \"role_id\"=$1"
+	sql := "DELETE FROM \"roles\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1430,7 +1430,7 @@ func (o RoleSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Role) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindRole(ctx, exec, o.RoleID)
+	ret, err := FindRole(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1469,16 +1469,16 @@ func (o *RoleSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 }
 
 // RoleExists checks if the Role row exists.
-func RoleExists(ctx context.Context, exec boil.ContextExecutor, roleID string) (bool, error) {
+func RoleExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"roles\" where \"role_id\"=$1 limit 1)"
+	sql := "select exists(select 1 from \"roles\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, roleID)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, roleID)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {
@@ -1490,7 +1490,7 @@ func RoleExists(ctx context.Context, exec boil.ContextExecutor, roleID string) (
 
 // Exists checks if the Role row exists.
 func (o *Role) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
-	return RoleExists(ctx, exec, o.RoleID)
+	return RoleExists(ctx, exec, o.ID)
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.

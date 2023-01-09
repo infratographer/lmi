@@ -26,7 +26,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Role'
+                  $ref: '#/components/schemas/RoleInfo'
         default:
           description: unexpected error
           content:
@@ -67,6 +67,7 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       responses:
         '200':
           description: role response
@@ -90,6 +91,7 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       requestBody:
         description: Role to update
         required: true
@@ -120,6 +122,7 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       responses:
         '204':
           description: role deleted
@@ -140,6 +143,7 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       responses:
         '200':
           description: role permissions
@@ -148,7 +152,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Permission'
+                  $ref: '#/components/schemas/PermissionIdentifier'
         default:
           description: unexpected error
           content:
@@ -165,20 +169,17 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       requestBody:
         description: Permission to add to a role
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: '#/components/schemas/PermissionIdentifier'
       responses:
         '200':
           description: role permission added
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Permission'
         default:
           description: unexpected error
           content:
@@ -195,20 +196,17 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       requestBody:
         description: Permission to remove from a role
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: '#/components/schemas/PermissionIdentifier'
       responses:
         '200':
           description: role permission removed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Permission'
         default:
           description: unexpected error
           content:
@@ -226,21 +224,14 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       requestBody:
-        description: The subject and scope to assign the role to
+        description: The subject and scope (directory) to assign the role to
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - subject
-                - scope
-              properties:
-                subject:
-                  type: string
-                scope:
-                  type: string
+              $ref: '#/components/schemas/NewRoleAssignment'
       responses:
         '200':
           description: role assigned
@@ -260,6 +251,7 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       responses:
         '200':
           description: role assignments
@@ -268,15 +260,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  required:
-                    - subject
-                    - scope
-                  properties:
-                    subject:
-                      type: string
-                    scope:
-                      type: string
+                  $ref: '#/components/schemas/Assignment'
         default:
           description: unexpected error
           content:
@@ -293,21 +277,14 @@ paths:
           required: true
           schema:
             type: string
+            x-go-type: EntityID
       requestBody:
         description: The subject and scope to remove the role from
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - subject
-                - scope
-              properties:
-                subject:
-                  type: string
-                scope:
-                  type: string
+              $ref: '#/components/schemas/NewRoleAssignment'
       responses:
         '200':
           description: role assignment removed
@@ -334,6 +311,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: role
+          in: query
+          description: role to return assignments for
+          schema:
+            type: string
+            x-go-type: EntityID
       responses:
         '200':
           description: role assignments
@@ -342,18 +325,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  required:
-                    - subject
-                    - scope
-                    - role
-                  properties:
-                    subject:
-                      type: string
-                    scope:
-                      type: string
-                    role:
-                      type: string
+                  $ref: '#/components/schemas/Assignment'
         default:
           description: unexpected error
           content:
@@ -364,6 +336,12 @@ paths:
     get:
       description: returns a list of permissions
       operationId: getPermissions
+      parameters:
+        - name: target
+          in: query
+          description: target to return permission information for
+          schema:
+            type: string
       responses:
         '200':
           description: permissions
@@ -383,19 +361,27 @@ components:
   schemas:
     Role:
       allOf:
-        - $ref: '#/components/schemas/NewRole'
+        - $ref: '#/components/schemas/RoleInfo'
         - type: object
           required:
           - id
           properties:
-            id:
-              type: string
+            permissions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Permission'
 
-    NewRole:
+    RoleInfo:
       type: object
       required:
+        - id
         - name
+        - createdAt
+        - updatedAt
       properties:
+        id:
+          type: string
+          x-go-type: EntityID
         name:
           type: string
         description:
@@ -406,20 +392,54 @@ components:
         updatedAt:
           type: string
           format: date-time
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
 
-    Permission:
+    NewRole:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string    
+
+    PermissionIdentifier:
       type: object
       required:
         - target
       properties:
         target:
           type: string
-        description:
+
+    Permission:
+      allOf:
+        - $ref: '#/components/schemas/PermissionIdentifier'
+        - type: object
+          properties:
+            description:
+              type: string
+
+    NewRoleAssignment:
+      type: object
+      required:
+        - subject
+        - scope
+      properties:
+        subject:
           type: string
+        scope:
+          type: string
+
+    Assignment:
+      allOf:
+        - $ref: '#/components/schemas/NewRoleAssignment'
+        - type: object
+          required:
+            - role
+          properties:
+            role:
+              type: string
+              x-go-type: EntityID
 
     Error:
       type: object

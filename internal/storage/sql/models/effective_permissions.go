@@ -469,7 +469,7 @@ func (o *EffectivePermission) ScopeTrackedDirectory(mods ...qm.QueryMod) tracked
 // FromRoleRole pointed to by the foreign key.
 func (o *EffectivePermission) FromRoleRole(mods ...qm.QueryMod) roleQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("\"role_id\" = ?", o.FromRole),
+		qm.Where("\"id\" = ?", o.FromRole),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -897,7 +897,7 @@ func (effectivePermissionL) LoadFromRoleRole(ctx context.Context, e boil.Context
 
 	query := NewQuery(
 		qm.From(`roles`),
-		qm.WhereIn(`roles.role_id in ?`, args...),
+		qm.WhereIn(`roles.id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -944,7 +944,7 @@ func (effectivePermissionL) LoadFromRoleRole(ctx context.Context, e boil.Context
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.FromRole == foreign.RoleID {
+			if local.FromRole == foreign.ID {
 				local.R.FromRoleRole = foreign
 				if foreign.R == nil {
 					foreign.R = &roleR{}
@@ -1115,7 +1115,7 @@ func (o *EffectivePermission) SetFromRoleRole(ctx context.Context, exec boil.Con
 		strmangle.SetParamNames("\"", "\"", 1, []string{"from_role"}),
 		strmangle.WhereClause("\"", "\"", 2, effectivePermissionPrimaryKeyColumns),
 	)
-	values := []interface{}{related.RoleID, o.SubjectID, o.Target, o.Scope}
+	values := []interface{}{related.ID, o.SubjectID, o.Target, o.Scope}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1126,7 +1126,7 @@ func (o *EffectivePermission) SetFromRoleRole(ctx context.Context, exec boil.Con
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.FromRole = related.RoleID
+	o.FromRole = related.ID
 	if o.R == nil {
 		o.R = &effectivePermissionR{
 			FromRoleRole: related,
