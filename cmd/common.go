@@ -20,7 +20,7 @@ func initLogger() *zap.Logger {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
-	viper.SetEnvPrefix("loadbalancerapi")
+	viper.SetEnvPrefix("lmi")
 
 	viper.AutomaticEnv() // read in environment variables that match
 }
