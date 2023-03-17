@@ -3,7 +3,7 @@ module github.com/infratographer/lmi
 go 1.19
 
 require (
-	github.com/cockroachdb/cockroach-go/v2 v2.2.20
+	github.com/cockroachdb/cockroach-go/v2 v2.3.3
 	github.com/deepmap/oapi-codegen v1.12.4
 	github.com/friendsofgo/errors v0.9.2
 	github.com/getkin/kin-openapi v0.112.0
